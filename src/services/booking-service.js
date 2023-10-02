@@ -1,7 +1,13 @@
 const { bookingRepository } = require("../repositories");
+const axios = require("axios");
+const { FLIGHT_SERVICE_PATH } = require("../config/serverConfig");
 module.exports = {
   createBooking: async (booking) => {
     try {
+      const { data } = await axios.get(
+        `${FLIGHT_SERVICE_PATH}/api/v1/flight/${booking.flightId}`
+      );
+      booking.totalCost = data.price * booking.noOfSeats;
       return await bookingRepository.createBooking(booking);
     } catch (error) {
       throw error;
